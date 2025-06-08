@@ -6,12 +6,19 @@ namespace Services.Data
 {
     public class SettingService : ISettingService
     {
+
+        // *******************************************************************
+
+        // For Injecting Dependencies
         private readonly ApplicationDbContext dbContext;
 
         public SettingService(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
+
+        // *******************************************************************
+        
 
         /// <summary>
         /// Adds settings to database
@@ -20,6 +27,8 @@ namespace Services.Data
         /// <param name="value">The setting's value</param>
         /// <param name="type">The setting's type</param>
         /// <returns>Task representing the operation</returns>
+
+        // For Adding a Setting 
         public async Task AddAsync(string key, string value, string type)
         {
             await dbContext.Settings.AddAsync(
@@ -33,17 +42,24 @@ namespace Services.Data
             await dbContext.SaveChangesAsync();
         }
 
+        // *******************************************************************
+        
+
         /// <summary>
         /// Finds the setting by searched key
         /// </summary>
         /// <param name="key">The setting's key</param>
         /// <returns>Task with value-type tuple of the searched setting</returns>
+
+        // For Getting a Setting
         public async Task<(string Value, string Type)> GetAsync(string key)
         {
             var res = await dbContext.Settings.FindAsync(key);
             
             return res == null ? (null, null) : (res.Value, res.Type);
         }
+
+        // *******************************************************************
 
         /// <summary>
         /// Updates setting data
@@ -52,6 +68,8 @@ namespace Services.Data
         /// <param name="value">The setting's value</param>
         /// <param name="type">The setting's type</param>
         /// <returns>Task representing the operation</returns>
+
+        // For Updating a Setting
         public async Task UpdateAsync(string key, string value, string type)
         {
             var res = await dbContext.Settings.FindAsync(key);
@@ -60,6 +78,7 @@ namespace Services.Data
             {
                 res.Value = value;
                 res.Type = type;
+                
                 this.dbContext.Settings.Update(res);
                 await dbContext.SaveChangesAsync();
             }
